@@ -1,10 +1,17 @@
-# syntax=docker/dockerfile:1
+# Use ubuntu as the base image
+FROM ubuntu:latest
 
-FROM ubuntu:22.04
+# Install Python, pip, R, and rgbif
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    r-base
+#    r-cran-rgbif
 
-COPY . /code
-CMD /code/script.sh
+# Copy the Python and R scripts to the working directory
+COPY hello.py /app/hello.py
+COPY hummingbirds.R /app/hummingbirds.R
 
-# When running in the hackathon evaluation script, `ls -d /code/tests/data/*.csv`
-# will be used to append all test cubes available in the `tests/data` directory
-# so if you have more than one cube there, be sure your workflow can cope with that
+# Run the Python and R scripts
+CMD ["python3", "/app/hello.py"]
+CMD ["Rscript", "/app/hummingbirds.R"]
