@@ -18,7 +18,14 @@ taxon_key = 734
 hummingbirds = pygbif.occurrences.search(taxonKey = taxon_key, limit = 1000, hasCoordinate = True)
 
 # Convert the GBIF data to a geopandas data frame
-hummingbirds_gdf = gpd.GeoDataFrame(hummingbirds["results"], geometry = gpd.points_from_xy(hummingbirds["results"]["decimalLongitude"], hummingbirds["results"]["decimalLatitude"]))
+hummingbirds_df = pd.DataFrame(hummingbirds["results"])
+hummingbirds_gdf = gpd.GeoDataFrame(
+    hummingbirds_df,
+    geometry = gpd.points_from_xy(
+        hummingbirds_df["decimalLongitude"],
+        hummingbirds_df["decimalLatitude"]
+    )
+)
 
 # Define the spatial extent for the analysis
 xmin = -180
@@ -34,7 +41,7 @@ raster_template.close()
 hummingbirds_raster = rf.rasterize(hummingbirds_gdf.geometry, out_shape = (ymax - ymin, xmax - xmin), fill = 0, transform = rio.transform.from_origin(xmin, ymax, 1, 1))
 # Calculate the species richness indicator
 richness = pd.DataFrame(hummingbirds_gdf.groupby("speciesKey").size(), columns = ["count"])
-richness["speciesKey"] = richness.index
+#richness["speciesKey"] = richness.index
 richness = pd.merge(hummingbirds_gdf[["speciesKey", "geometry"]], richness, on = "speciesKey")
 richness_raster = rf.rasterize(richness.geometry, out = hummingbirds_raster, transform = rio.transform.from_origin(xmin, ymax, 1, 1), merge_alg = rio.enums.MergeAlg.add)
 # Plot the hummingbird occurrences and the species richness indicator
@@ -43,4 +50,5 @@ ax[0].imshow(hummingbirds_raster, extent = [xmin, xmax, ymin, ymax], cmap = "Blu
 ax[0].set_title("Hummingbird occurrences")
 ax[1].imshow(richness_raster, extent = [xmin, xmax, ymin, ymax], cmap = "Reds")
 ax[1].set_title("Hummingbird species richness")
-plt.show()
+#plt.show()
+fig.savefig('/results/hummingbird_pyplot.png')

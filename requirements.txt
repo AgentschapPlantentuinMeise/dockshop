@@ -1,0 +1,6 @@
+pygbif
+pandas
+geopandas
+shapely
+rasterio
+matplotlib

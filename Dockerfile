@@ -7,6 +7,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     r-base
 #    r-cran-rgbif
+RUN apt-get install -y build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+
+RUN R -e "install.packages('rgbif', clean=TRUE)"
+RUN R -e "install.packages('sp', clean=TRUE)"
+RUN apt-get install -y  gdal-bin libgdal-dev
+RUN R -e "install.packages('raster', clean=TRUE)"
+#RUN R -e "install.packages('terra', clean=TRUE)" # maptools legacy
 
 # Copy the Python and R scripts to the working directory
 COPY hello.py /app/hello.py
