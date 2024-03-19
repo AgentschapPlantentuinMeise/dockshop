@@ -17,4 +17,11 @@ specifying a shell as command we can debug:
 
     docker run -it copilot /bin/bash
 
+After debugging, the following lines will run the "default" R script
+and the Python alternative, respectively:
+
+    docker run -v /c/Users/$USER/repos/dockshop/tests:/results \
+        -ti copilot
+    docker run -v /c/Users/$USER/repos/dockshop/tests:/results \
+        -ti copilot python3 /app/hello.py
 

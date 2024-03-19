@@ -15,6 +15,10 @@ RUN apt-get install -y  gdal-bin libgdal-dev
 RUN R -e "install.packages('raster', clean=TRUE)"
 #RUN R -e "install.packages('terra', clean=TRUE)" # maptools legacy
 
+# Python packages
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install -r /app/requirements.txt
+
 # Copy the Python and R scripts to the working directory
 COPY hello.py /app/hello.py
 COPY hummingbirds.R /app/hummingbirds.R
